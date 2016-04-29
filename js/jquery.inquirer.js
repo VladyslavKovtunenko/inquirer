@@ -34,8 +34,13 @@
         });
 
         submit(questionsObj, tag);
+        addStyle();
     }
-    
+
+    function addStyle() {
+        $('#submit_button').addClass('button');
+    }
+
     function short_text(obj, tag) {
         var form = $('<form/>', {
             id: 'short_text_form'
@@ -50,8 +55,6 @@
             id: 'short_text_input',
             type: 'text'
         }).appendTo(form);
-
-        // console.log('short_text');
     }
     
     function multiple_choice(obj, tag) {
@@ -64,19 +67,20 @@
             text: obj.question
         }).appendTo(form);
 
+        var list = $('<dl/>').appendTo(form);
+
         obj.choices.forEach(function (item) {
+            var line = $('<dd/>').appendTo(list);
             $('<input/>', {
                 id: 'multiple_choice_' + item.label,
                 type: 'checkbox'
-            }).appendTo(form);
+            }).appendTo(line);
 
             $('<label/>', {
                 text: item.label,
                 for: 'multiple_choice_' + item.label
-            }).appendTo(form);
+            }).appendTo(line);
         });
-
-        // console.log('multiple_choice')
     }
 
     function rating(obj, tag) {
@@ -89,20 +93,22 @@
             text: obj.question
         }).appendTo(form);
 
+        var list = $('<dl/>').appendTo(form);
+
         for (var i = obj.range.start; i <= obj.range.end; i++) {
+            var line = $('<dd/>').appendTo(list);
+
             $('<input/>', {
                 id: 'rating_' + i,
                 type: 'radio',
                 name: 'rating'
-            }).appendTo(form);
+            }).appendTo(line);
 
             $('<label/>', {
                 text: i,
                 for: 'rating_' + i
-            }).appendTo(form);
+            }).appendTo(line);
         }
-
-        // console.log('rating')
     }
 
     function submit(obj, tag) {
@@ -111,28 +117,36 @@
             text: 'submit'
         }).appendTo(tag);
 
-
         $('#submit_button').click(function () {
             (function setTypes() {
+                var short_text = false;
+                var multiple_choice = false;
+                var rating = false;
                 obj.fields.forEach(function (item) {
                     switch (item.type) {
                         case 'short_text':
-                            valid_short_text(item);
+                            short_text = valid_short_text(item);
                             break;
                         case 'multiple_choice':
-                            valid_multiple_choice(item);
+                            multiple_choice = valid_multiple_choice(item);
                             break;
                         case 'rating':
-                            valid_rating(item);
+                            rating = valid_rating(item);
                             break;
                     }
                 });
+
+                if (!(short_text && multiple_choice && rating)) {
+                    alert('Form not valid!');
+                } else {
+                    alert('Success!');
+                }
+
             })();
 
             function valid_short_text(obj) {
-                if (!$('#' + obj.type + '_input').val()) {
-                    console.log('bad input');
-                }
+                return $('#' + obj.type + '_input').val();
+
             }
 
             function valid_multiple_choice(obj) {
@@ -142,9 +156,7 @@
                         check = true;
                     }
                 });
-                if (!check) {
-                    console.log('bad checkbox');
-                }
+                return check;
             }
 
             function valid_rating(obj) {
@@ -155,11 +167,8 @@
                         break;
                     }
                 }
-                if (!check) {
-                    console.log('bad rating');
-                }
+                return check;
             }
-
         });
     }
     
