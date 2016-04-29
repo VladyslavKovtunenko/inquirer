@@ -5,21 +5,52 @@
     <title>Inquirer</title>
     <script src="js/lib/jquery-2.2.3.min.js"></script>
     <script src="js/lib/jquery-json.min.js"></script>
-    <script src="js/question.js" defer></script>
     <script src="js/jquery.inquirer.js" defer></script>
 </head>
 <body>
-    <div id="add"></div>
-    <script>
-        $(document).ready(function () {
-            $().inquirer('#add', generateQuestions());
-        });
 
-        function generateQuestions() {
-            var q1 = new Question('How are you?', ['Y', 'N', 'I don\'t know']);
-            var q2 = new Question('Are you busy now?', ['N/A', 'Yes', 'No']);
-            return [$.toJSON(q1), $.toJSON(q2)];
-        }
-    </script>
+<div id="add">
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $().inquirer('#add', JSON.stringify({
+            title: 'My first form',
+            fields: [
+                {
+                    type: 'short_text',
+                    question: 'What is your name?'
+                },
+                {
+                    type: 'multiple_choice',
+                    question: 'Who are you?',
+                    choices: [
+                        {
+                            label: 'ironman'
+                        },
+                        {
+                            label: 'batman'
+                        },
+                        {
+                            label: 'cat'
+                        },
+                        {
+                            label: 'human'
+                        }
+                    ]
+                },
+                {
+                    type: 'rating',
+                    question: 'Your skill?',
+                    range: {
+                        start: '1',
+                        end: '5'
+                    }
+                }
+            ]
+        }, null, ' '));
+    });
+</script>
 </body>
 </html>
