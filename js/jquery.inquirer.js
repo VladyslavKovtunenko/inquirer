@@ -33,7 +33,7 @@
             }
         });
 
-        submit(tag);
+        submit(questionsObj, tag);
     }
     
     function short_text(obj, tag) {
@@ -105,7 +105,7 @@
         // console.log('rating')
     }
 
-    function submit(tag) {
+    function submit(obj, tag) {
         $('<button/>', {
             id: 'submit_button',
             text: 'submit'
@@ -113,9 +113,53 @@
 
 
         $('#submit_button').click(function () {
-            /**
-             * logic
-             */
+            (function setTypes() {
+                obj.fields.forEach(function (item) {
+                    switch (item.type) {
+                        case 'short_text':
+                            valid_short_text(item);
+                            break;
+                        case 'multiple_choice':
+                            valid_multiple_choice(item);
+                            break;
+                        case 'rating':
+                            valid_rating(item);
+                            break;
+                    }
+                });
+            })();
+
+            function valid_short_text(obj) {
+                if (!$('#' + obj.type + '_input').val()) {
+                    console.log('bad input');
+                }
+            }
+
+            function valid_multiple_choice(obj) {
+                var check = false;
+                obj.choices.forEach(function (item) {
+                    if ($('#multiple_choice_' + item.label).is(':checked')) {
+                        check = true;
+                    }
+                });
+                if (!check) {
+                    console.log('bad checkbox');
+                }
+            }
+
+            function valid_rating(obj) {
+                var check = false;
+                for (var i = obj.range.start; i <= obj.range.end; i++) {
+                    if ($('#rating_' + i).is(':checked')) {
+                        check = true;
+                        break;
+                    }
+                }
+                if (!check) {
+                    console.log('bad rating');
+                }
+            }
+
         });
     }
     
