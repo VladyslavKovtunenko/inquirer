@@ -32,6 +32,8 @@
                     break;
             }
         });
+
+        submit(tag);
     }
     
     function short_text(obj, tag) {
@@ -49,7 +51,7 @@
             type: 'text'
         }).appendTo(form);
 
-        console.log('short_text');
+        // console.log('short_text');
     }
     
     function multiple_choice(obj, tag) {
@@ -70,11 +72,11 @@
 
             $('<label/>', {
                 text: item.label,
-                for: item.label
+                for: 'multiple_choice_' + item.label
             }).appendTo(form);
         });
 
-        console.log('multiple_choice')
+        // console.log('multiple_choice')
     }
 
     function rating(obj, tag) {
@@ -96,11 +98,25 @@
 
             $('<label/>', {
                 text: i,
-                for: i
+                for: 'rating_' + i
             }).appendTo(form);
         }
 
-        console.log('rating')
+        // console.log('rating')
+    }
+
+    function submit(tag) {
+        $('<button/>', {
+            id: 'submit_button',
+            text: 'submit'
+        }).appendTo(tag);
+
+
+        $('#submit_button').click(function () {
+            /**
+             * logic
+             */
+        });
     }
     
 })(jQuery);
