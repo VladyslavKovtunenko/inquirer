@@ -37,14 +37,26 @@
          * add to main list or tag ?
          */
         submit(questionsObj, mainList);
+        addChecking(questionsObj);
         addStyle(questionsObj);
+        // animation(questionsObj);
     }
     
     function addStyle() {
         $('#submit_button').addClass('button');
         $('[id $= question]').addClass('question');
+
+        /**
+         *
+         */
         $('[id $= form]').addClass('wrapper');
-        // $('#multiple_choice_form').addStyle('multiple');
+
+        /**
+         *
+         */
+        // $('[id $= form]').animate({
+        //     opacity: '0.3'
+        // });
     }
     
     function short_text(obj, tag) {
@@ -184,5 +196,45 @@
             }
         });
     }
-    
+
+    function addChecking() {
+        $('label').click(function () {
+            var current = $(this);
+            if (current.attr('for').includes('rating')) {
+                var localCurrent = $('[for ^= rating]');
+                if (localCurrent.hasClass('checked')) {
+                    localCurrent.removeClass('checked');
+                } else if (localCurrent.hasClass('unchecked')) {
+                    localCurrent.removeClass('unchecked');
+                }
+                current.addClass('checked');
+            } else {
+                if (current.hasClass('checked')) {
+                    current.addClass('unchecked');
+                    current.removeClass('checked');
+                } else {
+                    current.addClass('checked');
+                    current.removeClass('unchecked');
+                }
+            }
+        });
+    }
+
+    function animation(obj) {
+        //noinspection JSUnresolvedFunction
+        $(document).scroll(function () {
+            //noinspection JSValidateTypes
+            var top = $(this).scrollTop();
+            obj.fields.forEach(function (item) {
+                var current = $('#' + item.type + '_form');
+                if (current.position().top <= (top)) {
+                    // var opacity = $('#' + item.type + '_form').css('opacity');
+                    current.animate({
+                        opacity: '1'
+                    });
+                }
+            });
+        });
+    }
+
 })(jQuery);

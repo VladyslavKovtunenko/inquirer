@@ -15,12 +15,17 @@ input[type="text"]:focus {
 }
 
 input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
+    display: none;
 }
 
 input[type="radio"] {
-    width: 16px;
-    height: 16px;
+    display: none;
 }
 
+.checked {
+    color: crimson;
+}
+
+.unchecked {
+    color: #4fb0ae;
+}
