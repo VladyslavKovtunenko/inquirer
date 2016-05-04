@@ -1,0 +1,17 @@
+.question {
+    color: #37404a;
+    font-family: Source Sans Pro, sans-serif;
+    position: relative;
+    cursor: default;
+    text-align: center;
+    font-size: 48px;
+}
+
+.wrapper {
+    padding: 50px 50px 50px 50px;
+    align-content: center;
+}
+
+ul {
+    list-style: none;
+}

@@ -16,33 +16,39 @@
     };
 
     function generateByQuestionType(questionsObj) {
-        var tag = this.tag;
+        var mainList = $('<ul/>').appendTo(this.tag);
         questionsObj.fields.forEach(function (item) {
             switch (item.type) {
                 case 'short_text':
-                    short_text(item, tag);
+                    short_text(item, mainList);
                     break;
                 case 'multiple_choice':
-                    multiple_choice(item, tag);
+                    multiple_choice(item, mainList);
                     break;
                 case 'rating':
-                    rating(item, tag);
+                    rating(item, mainList);
                     break;
                 default:
                     break;
             }
         });
 
-        submit(questionsObj, tag);
-        addStyle();
+        /**
+         * add to main list or tag ?
+         */
+        submit(questionsObj, mainList);
+        addStyle(questionsObj);
     }
-
+    
     function addStyle() {
         $('#submit_button').addClass('button');
+        $('[id $= question]').addClass('question');
+        $('[id $= form]').addClass('wrapper');
+        // $('#multiple_choice_form').addStyle('multiple');
     }
-
+    
     function short_text(obj, tag) {
-        var form = $('<form/>', {
+        var form = $('<li/>', {
             id: 'short_text_form'
         }).appendTo(tag);
 
@@ -58,7 +64,7 @@
     }
     
     function multiple_choice(obj, tag) {
-        var form = $('<form/>', {
+        var form = $('<li/>', {
             id: 'multiple_choice_form'
         }).appendTo(tag);
 
@@ -70,7 +76,7 @@
         var list = $('<dl/>').appendTo(form);
 
         obj.choices.forEach(function (item) {
-            var line = $('<dd/>').appendTo(list);
+            var line = $('<dt/>').appendTo(list);
             $('<input/>', {
                 id: 'multiple_choice_' + item.label,
                 type: 'checkbox'
@@ -84,7 +90,7 @@
     }
 
     function rating(obj, tag) {
-        var form = $('<form/>', {
+        var form = $('<li/>', {
             id: 'rating_form'
         }).appendTo(tag);
 
@@ -96,7 +102,7 @@
         var list = $('<dl/>').appendTo(form);
 
         for (var i = obj.range.start; i <= obj.range.end; i++) {
-            var line = $('<dd/>').appendTo(list);
+            var line = $('<dt/>').appendTo(list);
 
             $('<input/>', {
                 id: 'rating_' + i,
@@ -114,11 +120,11 @@
     function submit(obj, tag) {
         $('<button/>', {
             id: 'submit_button',
-            text: 'submit'
+            text: 'Submit'
         }).appendTo(tag);
 
         $('#submit_button').click(function () {
-            (function setTypes() {
+            (function () {
                 var short_text = false;
                 var multiple_choice = false;
                 var rating = false;
@@ -136,17 +142,24 @@
                     }
                 });
 
-                if (!(short_text && multiple_choice && rating)) {
-                    alert('Form not valid!');
-                } else {
-                    alert('Success!');
+                switch (false) {
+                    case short_text:
+                        alert('Short text don\'t valid');
+                        break;
+                    case multiple_choice:
+                        alert('Multiple choice don\'t valid');
+                        break;
+                    case rating:
+                        alert('Rating don\'t valid');
+                        break;
+                    default:
+                        alert('Success!');
                 }
 
             })();
 
             function valid_short_text(obj) {
-                return $('#' + obj.type + '_input').val();
-
+                return $('#' + obj.type + '_input').val() != '';
             }
 
             function valid_multiple_choice(obj) {

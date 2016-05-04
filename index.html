@@ -1,52 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Inquirer</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="lib/jquery-2.2.3.min.js"></script>
-    <script src="js/jquery.inquirer.js" defer></script>
-</head>
-<body>
-<div id="add"></div>
-<script>
-    $(document).ready(function () {
-        $().inquirer('#add', JSON.stringify({
-            title: 'My first form',
-            fields: [
-                {
-                    type: 'short_text',
-                    question: 'What is your name?'
-                },
-                {
-                    type: 'multiple_choice',
-                    question: 'Who are you?',
-                    choices: [
+    <head>
+        <meta charset="UTF-8">
+        <title>Inquirer</title>
+
+        <!--css-->
+        <link rel="stylesheet" href="css/button.css">
+        <link rel="stylesheet" href="css/question.css">
+        <link rel="stylesheet" href="css/input.css">
+        <link rel="stylesheet" href="css/label.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <!--js-->
+        <script src="lib/jquery-2.2.3.min.js"></script>
+        <script src="js/jquery.inquirer.js" defer></script>
+
+    </head>
+    <body>
+        <div id="add" class="main"></div>
+        <script>
+            $(document).ready(function () {
+                $().inquirer('#add', JSON.stringify({
+                    title: 'My first form',
+                    fields: [
                         {
-                            label: 'iron man'
+                            type: 'short_text',
+                            question: 'What is your name?'
                         },
                         {
-                            label: 'batman'
+                            type: 'multiple_choice',
+                            question: 'Who are you?',
+                            choices: [
+                                {
+                                    label: 'iron-man'
+                                },
+                                {
+                                    label: 'batman'
+                                },
+                                {
+                                    label: 'cat'
+                                },
+                                {
+                                    label: 'human'
+                                }
+                            ]
                         },
                         {
-                            label: 'cat'
-                        },
-                        {
-                            label: 'human'
+                            type: 'rating',
+                            question: 'Your skill?',
+                            range: {
+                                start: '1',
+                                end: '5'
+                            }
                         }
                     ]
-                },
-                {
-                    type: 'rating',
-                    question: 'Your skill?',
-                    range: {
-                        start: '1',
-                        end: '5'
-                    }
-                }
-            ]
-        }));
-    });
-</script>
-</body>
+                }));
+            });
+        </script>
+    </body>
 </html>
