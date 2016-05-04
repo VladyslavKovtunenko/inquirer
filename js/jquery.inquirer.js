@@ -12,7 +12,7 @@
     }
 
     Inquirer.prototype.init = function () {
-        generateByQuestionType.call(this, $.parseJSON(this.question));
+        generateByQuestionType.call(this, JSON.parse(this.question));
     };
 
     function generateByQuestionType(questionsObj) {

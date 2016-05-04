@@ -4,25 +4,14 @@
     <meta charset="UTF-8">
     <title>Inquirer</title>
     <link rel="stylesheet" href="css/style.css">
-    <!--jquery-->
-    <script src="js/lib/jquery-2.2.3.min.js"></script>
-    <script src="js/lib/jquery-json.min.js"></script>
-    <!---->
+    <script src="lib/jquery-2.2.3.min.js"></script>
     <script src="js/jquery.inquirer.js" defer></script>
-    <!--typeform-->
-    <!--<script src="js/typeform/init.typeform.js"></script>-->
-    <!--<script src="js/typeform/init.js"></script>-->
-    <!--<script src="js/typeform/jquery.inquirer.typeform.js"></script>-->
-    <!---->
 </head>
 <body>
-
-<!--<div id="typeform_add"></div>-->
 <div id="add"></div>
-
 <script>
     $(document).ready(function () {
-        $().inquirer('#add', $.toJSON({
+        $().inquirer('#add', JSON.stringify({
             title: 'My first form',
             fields: [
                 {
