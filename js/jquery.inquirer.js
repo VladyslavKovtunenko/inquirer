@@ -156,19 +156,27 @@
 
                 switch (false) {
                     case short_text:
-                        alert('Short text don\'t valid');
+                        bodyScroll($('#short_text_form').position().top);
+                        // alert('Short text don\'t valid');
                         break;
                     case multiple_choice:
-                        alert('Multiple choice don\'t valid');
+                        bodyScroll($('#multiple_choice_form').position().top);
+                        // alert('Multiple choice don\'t valid');
                         break;
                     case rating:
-                        alert('Rating don\'t valid');
+                        bodyScroll($('#rating_form').position().top);
+                        // alert('Rating don\'t valid');
                         break;
                     default:
                         alert('Success!');
                 }
-
             })();
+
+            function bodyScroll(destination) {
+                $('body').animate({
+                    scrollTop: destination
+                })
+            }
 
             function valid_short_text(obj) {
                 return $('#' + obj.type + '_input').val() != '';
