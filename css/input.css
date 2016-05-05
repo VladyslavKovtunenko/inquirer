@@ -39,10 +39,18 @@ input[type="radio"] {
     bottom: 0;
 }
 
-.progress {
+progress {
+    background-color: #37404a;
     float: right;
     width: 350px;
+    appearance: none;
+    height: 24px;
     margin-right: 50px;
-    border-radius: 5px;
-    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #37404a;
+}
+progress::-webkit-progress-value {
+    background-color: #4fb0ae;
 }
