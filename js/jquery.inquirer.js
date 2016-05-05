@@ -41,6 +41,9 @@
         addStyle(questionsObj);
         animation(questionsObj);
         footer(questionsObj);
+        setInterval(function () {
+            listenProgress(questionsObj)
+        }, 100);
     }
 
     function addStyle() {
@@ -128,28 +131,7 @@
         }).appendTo(tag);
 
         $('#submit_button').click(function () {
-            (function () {
-                var short_text = false;
-                var multiple_choice = false;
-                var rating = false;
-                obj.fields.forEach(function (item) {
-                    switch (item.type) {
-                        case 'short_text':
-                            short_text = valid_short_text(item);
-                            break;
-                        case 'multiple_choice':
-                            multiple_choice = valid_multiple_choice(item);
-                            break;
-                        case 'rating':
-                            rating = valid_rating(item);
-                            break;
-                    }
-                });
-
-                checkValidationResult(short_text, multiple_choice, rating);
-            })();
-
-            function checkValidationResult(short_text, multiple_choice, rating) {
+            validAllForm(obj, function (short_text, multiple_choice, rating) {
                 switch (false) {
                     case short_text:
                         bodyScroll($('#short_text_form').position().top);
@@ -166,7 +148,7 @@
                     default:
                         alert('Success!');
                 }
-            }
+            });
 
             function bodyScroll(destination) {
                 $('body').animate({
@@ -174,31 +156,55 @@
                 })
             }
 
-            function valid_short_text(obj) {
-                return $('#' + obj.type + '_input').val() != '';
-            }
-
-            function valid_multiple_choice(obj) {
-                var check = false;
-                obj.choices.forEach(function (item) {
-                    if ($('#multiple_choice_' + item.label).is(':checked')) {
-                        check = true;
-                    }
-                });
-                return check;
-            }
-
-            function valid_rating(obj) {
-                var check = false;
-                for (var i = obj.range.start; i <= obj.range.end; i++) {
-                    if ($('#rating_' + i).is(':checked')) {
-                        check = true;
-                        break;
-                    }
-                }
-                return check;
-            }
         });
+    }
+
+    function validAllForm(obj, f) {
+        (function () {
+            var short_text = false;
+            var multiple_choice = false;
+            var rating = false;
+            obj.fields.forEach(function (item) {
+                switch (item.type) {
+                    case 'short_text':
+                        short_text = valid_short_text(item);
+                        break;
+                    case 'multiple_choice':
+                        multiple_choice = valid_multiple_choice(item);
+                        break;
+                    case 'rating':
+                        rating = valid_rating(item);
+                        break;
+                }
+            });
+            f(short_text, multiple_choice, rating);
+        })();
+
+
+        function valid_short_text(obj) {
+            return $('#' + obj.type + '_input').val() != '';
+        }
+
+        function valid_multiple_choice(obj) {
+            var check = false;
+            obj.choices.forEach(function (item) {
+                if ($('#multiple_choice_' + item.label).is(':checked')) {
+                    check = true;
+                }
+            });
+            return check;
+        }
+
+        function valid_rating(obj) {
+            var check = false;
+            for (var i = obj.range.start; i <= obj.range.end; i++) {
+                if ($('#rating_' + i).is(':checked')) {
+                    check = true;
+                    break;
+                }
+            }
+            return check;
+        }
     }
 
     function addChecking() {
@@ -258,7 +264,7 @@
             id: 'footer'
         }).appendTo('body');
 
-        (function addNavigationButton() {
+        (function addNavigation() {
             var list = $('<ul/>', {
                 id: 'button_list',
                 class: 'footer'
@@ -302,7 +308,36 @@
                 });
             });
 
+            $('<progress/>', {
+                id: 'progress',
+                class: 'progress',
+                min: '0',
+                max: '100',
+                value: '0'
+            }).appendTo(list);
+
         })();
     }
-    
-})(jQuery);
+
+    function listenProgress(obj) {
+        var globalValue = 0;
+        var addValue = 100 / obj.fields.length;
+        var progress = $('#progress');
+        progress.attr('value', globalValue);
+        console.log(globalValue);
+        validAllForm(obj, function (short_text, multiple_choice, rating) {
+            if (short_text) {
+                globalValue += addValue;
+            }
+            if (multiple_choice) {
+                globalValue += addValue;
+            }
+            if (rating) {
+                globalValue += addValue;
+            }
+        });
+        progress.attr('value', globalValue);
+    }
+
+})
+(jQuery);
