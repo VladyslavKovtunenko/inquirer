@@ -12,6 +12,7 @@ input[type="text"] {
 
 input[type="text"]:focus {
     border-style: inset;
+    color: crimson;
 }
 
 input[type="checkbox"] {

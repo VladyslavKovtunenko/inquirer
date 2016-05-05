@@ -324,7 +324,6 @@
         var addValue = 100 / obj.fields.length;
         var progress = $('#progress');
         progress.attr('value', globalValue);
-        console.log(globalValue);
         validAllForm(obj, function (short_text, multiple_choice, rating) {
             if (short_text) {
                 globalValue += addValue;
