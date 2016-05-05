@@ -39,26 +39,17 @@
         submit(questionsObj, mainList);
         addChecking(questionsObj);
         addStyle(questionsObj);
-        // animation(questionsObj);
+        animation(questionsObj);
     }
-    
+
     function addStyle() {
         $('#submit_button').addClass('button');
         $('[id $= question]').addClass('question');
-
-        /**
-         *
-         */
-        $('[id $= form]').addClass('wrapper');
-
-        /**
-         *
-         */
-        // $('[id $= form]').animate({
-        //     opacity: '0.3'
-        // });
+        $('[id $= form]').addClass('wrapper').animate({
+            opacity: '0.1'
+        });
     }
-    
+
     function short_text(obj, tag) {
         var form = $('<li/>', {
             id: 'short_text_form'
@@ -74,7 +65,7 @@
             type: 'text'
         }).appendTo(form);
     }
-    
+
     function multiple_choice(obj, tag) {
         var form = $('<li/>', {
             id: 'multiple_choice_form'
@@ -154,6 +145,10 @@
                     }
                 });
 
+                checkValidationResult(short_text, multiple_choice, rating);
+            })();
+
+            function checkValidationResult(short_text, multiple_choice, rating) {
                 switch (false) {
                     case short_text:
                         bodyScroll($('#short_text_form').position().top);
@@ -170,7 +165,7 @@
                     default:
                         alert('Success!');
                 }
-            })();
+            }
 
             function bodyScroll(destination) {
                 $('body').animate({
@@ -229,17 +224,23 @@
     }
 
     function animation(obj) {
+        var speed = 25;
         //noinspection JSUnresolvedFunction
         $(document).scroll(function () {
             //noinspection JSValidateTypes
-            var top = $(this).scrollTop();
+            var top = $(this).scrollTop() + 150;
             obj.fields.forEach(function (item) {
                 var current = $('#' + item.type + '_form');
-                if (current.position().top <= (top)) {
-                    // var opacity = $('#' + item.type + '_form').css('opacity');
+                var positionTop = current.position().top;
+                var height  = positionTop + current.height();
+                if (positionTop < top && top < height) {
                     current.animate({
                         opacity: '1'
-                    });
+                    }, speed);
+                } else {
+                    current.animate({
+                        opacity: '0.1'
+                    }, speed);
                 }
             });
         });
