@@ -15,3 +15,26 @@
     border: 1px solid #367776;
     border-bottom-color: #24504f;
 }
+
+.navigate_button:enabled {
+    cursor: pointer;
+}
+
+.navigate_button {
+    background-color: #4fb0ae;
+    height: 24px;
+    line-height: 0;
+    padding: 15px 15px 15px 15px;
+    font-size: 18px;
+    border-radius: 3px;
+    text-align: center;
+    font-family: Source Sans Pro, sans-serif;
+    color: #edf7f7;
+    border: 1px solid #367776;
+    border-bottom-color: #24504f;
+}
+
+.footer {
+    padding: 5px 5px 5px 5px;
+    margin: 0;
+}

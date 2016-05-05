@@ -40,6 +40,7 @@
         addChecking(questionsObj);
         addStyle(questionsObj);
         animation(questionsObj);
+        footer(questionsObj);
     }
 
     function addStyle() {
@@ -232,18 +233,76 @@
             obj.fields.forEach(function (item) {
                 var current = $('#' + item.type + '_form');
                 var positionTop = current.position().top;
-                var height  = positionTop + current.height();
+                var height = positionTop + current.height();
+                animate(current, positionTop, height);
+            });
+
+            function animate(current, positionTop, height) {
                 if (positionTop < top && top < height) {
                     current.animate({
-                        opacity: '1'
+                        opacity: '1',
+                        scrollTop: positionTop
                     }, speed);
                 } else {
                     current.animate({
-                        opacity: '0.1'
+                        opacity: '0.4'
                     }, speed);
                 }
-            });
+            }
+
         });
     }
 
+    function footer(obj) {
+        $('<div/>', {
+            id: 'footer'
+        }).appendTo('body');
+
+        (function addNavigationButton() {
+            var list = $('<ul/>', {
+                id: 'button_list',
+                class: 'footer'
+            }).appendTo('#footer');
+
+            $('<button/>', {
+                id: 'up_button',
+                text: 'Up',
+                class: 'navigate_button'
+            }).appendTo(list).click(function () {
+                obj.fields.forEach(function (item, index) {
+                    var current = $('#' + item.type + '_form');
+                    var opacity = current.css('opacity');
+                    if (opacity == '1' && obj.fields[index - 1]) {
+                        var prev = $('#' + obj.fields[index - 1].type + '_form');
+                        var position = prev != undefined ? prev.position().top : current.position().top;
+                        if (position != undefined) {
+                            $('body').animate({
+                                scrollTop: position
+                            });
+                        }
+                    }
+                });
+            });
+
+            $('<button/>', {
+                id: 'down_button',
+                text: 'Down',
+                class: 'navigate_button'
+            }).appendTo(list).click(function () {
+                obj.fields.forEach(function (item, index) {
+                    var current = $('#' + item.type + '_form');
+                    var opacity = current.css('opacity');
+                    if (opacity == '1' && obj.fields[index + 1]) {
+                        var next = $('#' + obj.fields[index + 1].type + '_form');
+                        var position = next != undefined ? next.position().top : current.position().top;
+                        $('body').animate({
+                            scrollTop: position
+                        });
+                    }
+                });
+            });
+
+        })();
+    }
+    
 })(jQuery);
