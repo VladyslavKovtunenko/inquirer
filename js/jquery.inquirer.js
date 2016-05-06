@@ -51,14 +51,18 @@
         $('[id $= question]').addClass('question');
         $('[id $= form]').addClass('wrapper');
         obj.fields.forEach(function (item, index) {
+            var current = $('#' + item.type + '_form');
             if (index != 0) {
-                var current = $('#' + item.type + '_form');
                 var speed = 25;
                 current.animate({
                     opacity: '0.4'
-                }, speed);
+                }, speed).addClass('disabled');
+            } else {
+                $('body').animate({
+                    scrollTop: current.position().top
+                })
             }
-        })
+        });
     }
 
     function short_text(obj, tag) {
@@ -138,29 +142,32 @@
         }).appendTo(tag);
 
         $('#submit_button').click(function () {
-            validAllForm(obj, function (short_text, multiple_choice, rating) {
-                switch (false) {
-                    case short_text:
-                        bodyScroll($('#short_text_form').position().top);
-                        // alert('Short text don\'t valid');
-                        break;
-                    case multiple_choice:
-                        bodyScroll($('#multiple_choice_form').position().top);
-                        // alert('Multiple choice don\'t valid');
-                        break;
-                    case rating:
-                        bodyScroll($('#rating_form').position().top);
-                        // alert('Rating don\'t valid');
-                        break;
-                    default:
-                        alert('Success!');
+            validAllForm(obj, function (short_text, multiple_choice, rating, badItem) {
+
+                if (short_text && multiple_choice && rating) {
+                    alert('Success!');
+                } else {
+
+                    obj.fields.forEach(function (item) {
+                        var speed = 25;
+                        $('#' + item.type + '_form').animate({
+                            opacity: '0.4'
+                        }, speed).addClass('disabled');
+                    });
+
+                    var bad = $('#' + badItem.type + '_form');
+                    bodyScroll(bad.position().top);
+                    bad.removeClass('disabled').animate({
+                        opacity: '1'
+                    });
                 }
+
             });
 
             function bodyScroll(destination) {
                 $('body').animate({
                     scrollTop: destination
-                })
+                });
             }
 
         });
@@ -171,20 +178,30 @@
             var short_text = false;
             var multiple_choice = false;
             var rating = false;
+            var badItem = null;
             obj.fields.forEach(function (item) {
                 switch (item.type) {
                     case 'short_text':
                         short_text = valid_short_text(item);
+                        if (!badItem) {
+                            badItem = item;
+                        }
                         break;
                     case 'multiple_choice':
                         multiple_choice = valid_multiple_choice(item);
+                        if (!badItem) {
+                            badItem = item;
+                        }
                         break;
                     case 'rating':
                         rating = valid_rating(item);
+                        if (!badItem) {
+                            badItem = item;
+                        }
                         break;
                 }
             });
-            f(short_text, multiple_choice, rating);
+            f(short_text, multiple_choice, rating, badItem);
         })();
 
 
@@ -240,30 +257,39 @@
     function animation(obj) {
         var speed = 25;
         //noinspection JSUnresolvedFunction
-        $(document).scroll(function () {
+        $(document).on('mousewheel', function (event) {
             //noinspection JSValidateTypes
-            var top = $(this).scrollTop() + 50;
-            obj.fields.forEach(function (item) {
-                var current = $('#' + item.type + '_form');
-                var positionTop = current.position().top;
-                var height = positionTop + current.height();
-                animate(current, positionTop, height);
-            });
 
-            function animate(current, positionTop, height) {
-                if (positionTop < top && top < height) {
-                    current.animate({
-                        opacity: '1',
-                        scrollTop: positionTop
-                    }, speed);
-                    current.removeClass('disabled');
+            obj.fields.forEach(function (item, index) {
+                if (event.originalEvent.wheelDelta >= 0) {
+                    // up
+                    scroll(-1);
                 } else {
-                    current.animate({
-                        opacity: '0.4'
-                    }, speed);
-                    current.addClass('disabled');
+                    // down
+                    scroll(1);
                 }
-            }
+
+                function scroll(sign) {
+                    var current = $('#' + item.type + '_form');
+                    var opacity = current.css('opacity');
+                    if (obj.fields[index + sign] && opacity == '1') {
+                        var next = $('#' + obj.fields[index + sign].type + '_form');
+                        next.removeClass('disabled');
+                        next.animate({
+                            opacity: '1'
+                        }, speed);
+                        $('body').animate({
+                            scrollTop: next.position().top
+                        });
+
+                        current.animate({
+                            opacity: '0.4'
+                        });
+                        current.addClass('disabled');
+                    }
+                }
+
+            });
 
         });
     }
