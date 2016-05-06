@@ -1,0 +1,11 @@
+.disabled {
+    pointer-events: none;
+}
+
+.checked {
+    color: crimson;
+}
+
+.unchecked {
+    color: #4fb0ae;
+}

@@ -1,67 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Inquirer</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Inquirer</title>
 
-        <!--css-->
-        <link rel="stylesheet" href="css/button.css">
-        <link rel="stylesheet" href="css/question.css">
-        <link rel="stylesheet" href="css/input.css">
-        <link rel="stylesheet" href="css/label.css">
-        <link rel="stylesheet" href="css/main.css">
+    <!--css-->
+    <link rel="stylesheet" href="css/button.css">
+    <link rel="stylesheet" href="css/question.css">
+    <link rel="stylesheet" href="css/input.css">
+    <link rel="stylesheet" href="css/label.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/state.css">
+    <link rel="stylesheet" href="css/footer.css">
 
-        <!--js-->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-        <script src="js/jquery.inquirer.js" defer></script>
+    <!--js-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="js/jquery.inquirer.js" defer></script>
 
-    </head>
-    <body>
-        <div id="add" class="main"></div>
-        <script>
-            $(document).ready(function () {
-                $().inquirer('#add', JSON.stringify({
-                    title: 'My first form',
-                    fields: [
+</head>
+<body>
+<div id="add" class="main"></div>
+<script>
+    $(document).ready(function () {
+        $().inquirer('#add', JSON.stringify({
+            title: 'My first form',
+            fields: [
+                {
+                    type: 'short_text',
+                    question: 'What is your name?'
+                },
+                {
+                    type: 'multiple_choice',
+                    question: 'Who are you?',
+                    choices: [
                         {
-                            type: 'short_text',
-                            question: 'What is your name?'
+                            label: 'iron-man'
                         },
                         {
-                            type: 'multiple_choice',
-                            question: 'Who are you?',
-                            choices: [
-                                {
-                                    label: 'iron-man'
-                                },
-                                {
-                                    label: 'batman'
-                                },
-                                {
-                                    label: 'cat'
-                                },
-                                {
-                                    label: 'human'
-                                },
-                                {
-                                    label: 'lol'
-                                },
-                                {
-                                    label: 'John'
-                                }
-                            ]
+                            label: 'batman'
                         },
                         {
-                            type: 'rating',
-                            question: 'Your skill?',
-                            range: {
-                                start: '1',
-                                end: '5'
-                            }
+                            label: 'cat'
+                        },
+                        {
+                            label: 'human'
+                        },
+                        {
+                            label: 'lol'
+                        },
+                        {
+                            label: 'John'
                         }
                     ]
-                }));
-            });
-        </script>
-    </body>
+                },
+                {
+                    type: 'rating',
+                    question: 'Your skill?',
+                    range: {
+                        start: '1',
+                        end: '5'
+                    }
+                }
+            ]
+        }));
+    });
+</script>
+</body>
 </html>

@@ -1,10 +1,16 @@
 ;(function ($) {
 
+    /**
+     *  export point
+     */
     $.fn.inquirer = function (tag, questions) {
         new Inquirer(tag, questions);
         return this;
     };
 
+    /**
+     * Inquirer constructor
+     */
     function Inquirer(tag, question) {
         this.tag = tag;
         this.question = question;
@@ -15,45 +21,137 @@
         generateByQuestionType.call(this, JSON.parse(this.question));
     };
 
+    /**
+     * Creator constructor
+     */
+    function Creator() {
+    }
+
+    Creator.prototype.createMainLine = function (tag, id, styleClass) {
+        return $('<li/>', {
+            id: id,
+            class: styleClass
+        }).appendTo(tag);
+    };
+
+    Creator.prototype.createQuestion = function (tag, id, text, styleClass) {
+        return $('<h1/>', {
+            id: id,
+            text: text,
+            class: styleClass
+        }).appendTo(tag);
+    };
+
+    Creator.prototype.createInput = function (tag, id, type, name) {
+        return $('<input/>', {
+            id: id,
+            type: type,
+            name: name
+        }).appendTo(tag);
+    };
+
+    Creator.prototype.createLabel = function (tag, text, what) {
+        return $('<label/>', {
+            text: text,
+            for: what
+        }).appendTo(tag);
+    };
+
+    Creator.prototype.createButton = function (tag, id, text, styleClass, eventListener) {
+        var button;
+        if (eventListener) {
+            button = $('<button/>', {
+                id: id,
+                text: text,
+                class: styleClass
+            }).appendTo(tag).click(eventListener);
+        } else {
+            button = $('<button/>', {
+                id: id,
+                text: text,
+                class: styleClass
+            }).appendTo(tag);
+        }
+        return button;
+    };
+
+    Creator.prototype.createFooter = function (tag, id) {
+        return $('<div/>', {
+            id: id
+        }).appendTo(tag);
+    };
+
     function generateByQuestionType(questionsObj) {
+        var creator = new Creator();
         var mainList = $('<ul/>').appendTo(this.tag);
+
         questionsObj.fields.forEach(function (item) {
             switch (item.type) {
                 case 'short_text':
-                    short_text(item, mainList);
+                    short_text(item, mainList, creator);
                     break;
                 case 'multiple_choice':
-                    multiple_choice(item, mainList);
+                    multiple_choice(item, mainList, creator);
                     break;
                 case 'rating':
-                    rating(item, mainList);
+                    rating(item, mainList, creator);
                     break;
                 default:
                     break;
             }
         });
 
-        /**
-         * add to main list or tag ?
-         */
-        submit(questionsObj, mainList);
-        addChecking(questionsObj);
-        addStyle(questionsObj);
-        animation(questionsObj);
-        footer(questionsObj);
+        initOpacity(questionsObj);
+        submitButton(questionsObj, mainList, creator);
+        choice(questionsObj);
+        animateTransition(questionsObj);
+        createFooter(questionsObj, creator);
         setInterval(function () {
             listenProgress(questionsObj)
-        }, 100);
+        }, 250);
     }
 
-    function addStyle(obj) {
-        $('#submit_button').addClass('button');
-        $('[id $= question]').addClass('question');
-        $('[id $= form]').addClass('wrapper');
+    function short_text(obj, tag, creator) {
+        var form = creator.createMainLine(tag, 'short_text_form', 'wrapper');
+        (function createContent() {
+            creator.createQuestion(form, 'short_text_question', obj.question, 'question');
+            creator.createInput(form, 'short_text_input', 'text');
+        })();
+    }
+
+    function multiple_choice(obj, tag, creator) {
+        var form = creator.createMainLine(tag, 'multiple_choice_form', 'wrapper');
+        (function createContent() {
+            creator.createQuestion(form, 'multiple_choice_question', obj.question, 'question');
+            var list = $('<dl/>').appendTo(form);
+            obj.choices.forEach(function (item) {
+                var line = $('<dt/>').appendTo(list);
+                var id = 'multiple_choice_' + item.label;
+                creator.createInput(line, id, 'checkbox');
+                creator.createLabel(line, item.label, id);
+            });
+        })();
+    }
+
+    function rating(obj, tag, creator) {
+        var form = creator.createMainLine(tag, 'rating_form', 'wrapper');
+        (function createContent() {
+            creator.createQuestion(form, 'rating_question', obj.question, 'question');
+            var list = $('<dl/>').appendTo(form);
+            for (var i = obj.range.start; i <= obj.range.end; i++) {
+                var line = $('<dt/>').appendTo(list);
+                var id = 'rating_' + i;
+                creator.createInput(line, id, 'radio', 'rating');
+                creator.createLabel(line, i, id);
+            }
+        })();
+    }
+
+    function initOpacity(obj) {
+        var speed = 25;
         obj.fields.forEach(function (item, index) {
             var current = $('#' + item.type + '_form');
             if (index != 0) {
-                var speed = 25;
                 current.animate({
                     opacity: '0.4'
                 }, speed).addClass('disabled');
@@ -65,286 +163,207 @@
         });
     }
 
-    function short_text(obj, tag) {
-        var form = $('<li/>', {
-            id: 'short_text_form'
-        }).appendTo(tag);
-
-        $('<h1/>', {
-            id: 'short_text_question',
-            text: obj.question
-        }).appendTo(form);
-
-        $('<input/>', {
-            id: 'short_text_input',
-            type: 'text'
-        }).appendTo(form);
-    }
-
-    function multiple_choice(obj, tag) {
-        var form = $('<li/>', {
-            id: 'multiple_choice_form'
-        }).appendTo(tag);
-
-        $('<h1/>', {
-            id: 'multiple_choice_question',
-            text: obj.question
-        }).appendTo(form);
-
-        var list = $('<dl/>').appendTo(form);
-
-        obj.choices.forEach(function (item) {
-            var line = $('<dt/>').appendTo(list);
-            $('<input/>', {
-                id: 'multiple_choice_' + item.label,
-                type: 'checkbox'
-            }).appendTo(line);
-
-            $('<label/>', {
-                text: item.label,
-                for: 'multiple_choice_' + item.label
-            }).appendTo(line);
-        });
-    }
-
-    function rating(obj, tag) {
-        var form = $('<li/>', {
-            id: 'rating_form'
-        }).appendTo(tag);
-
-        $('<h1/>', {
-            id: 'rating_question',
-            text: obj.question
-        }).appendTo(form);
-
-        var list = $('<dl/>').appendTo(form);
-
-        for (var i = obj.range.start; i <= obj.range.end; i++) {
-            var line = $('<dt/>').appendTo(list);
-
-            $('<input/>', {
-                id: 'rating_' + i,
-                type: 'radio',
-                name: 'rating'
-            }).appendTo(line);
-
-            $('<label/>', {
-                text: i,
-                for: 'rating_' + i
-            }).appendTo(line);
-        }
-    }
-
-    function submit(obj, tag) {
-        $('<button/>', {
-            id: 'submit_button',
-            text: 'Submit'
-        }).appendTo(tag);
-
-        $('#submit_button').click(function () {
-            validAllForm(obj, function (short_text, multiple_choice, rating, badItem) {
-
-                if (short_text && multiple_choice && rating) {
+    function submitButton(obj, tag, creator) {
+        creator.createButton(tag, 'submit_button', 'Submit', 'button', function () {
+            validAllForm(obj, function (badItem) {
+                if (badItem == undefined) {
                     alert('Success!');
                 } else {
-
-                    obj.fields.forEach(function (item) {
-                        var speed = 25;
-                        $('#' + item.type + '_form').animate({
-                            opacity: '0.4'
-                        }, speed).addClass('disabled');
-                    });
-
-                    var bad = $('#' + badItem.type + '_form');
-                    bodyScroll(bad.position().top);
-                    bad.removeClass('disabled').animate({
-                        opacity: '1'
-                    });
+                    setOpacityForAllForm(obj);
+                    activateBadForm(badItem);
+                    bodyScroll(badItem);
                 }
-
             });
 
-            function bodyScroll(destination) {
+            function setOpacityForAllForm() {
+                var speed = 25;
+                obj.fields.forEach(function (item) {
+                    $('#' + item.type + '_form').animate({
+                        opacity: '0.4'
+                    }, speed).addClass('disabled');
+                });
+            }
+
+            function activateBadForm(badItem) {
+                $('#' + badItem.type + '_form')
+                    .removeClass('disabled')
+                    .animate({
+                        opacity: '1'
+                    });
+            }
+
+            function bodyScroll(badItem) {
                 $('body').animate({
-                    scrollTop: destination
+                    scrollTop: $('#' + badItem.type + '_form').position().top
                 });
             }
 
         });
     }
 
-    function validAllForm(obj, f) {
-        (function () {
-            var short_text = false;
-            var multiple_choice = false;
-            var rating = false;
-            var badItem = null;
-            obj.fields.forEach(function (item) {
-                switch (item.type) {
-                    case 'short_text':
-                        short_text = valid_short_text(item);
-                        if (!badItem) {
-                            badItem = item;
-                        }
-                        break;
-                    case 'multiple_choice':
-                        multiple_choice = valid_multiple_choice(item);
-                        if (!badItem) {
-                            badItem = item;
-                        }
-                        break;
-                    case 'rating':
-                        rating = valid_rating(item);
-                        if (!badItem) {
-                            badItem = item;
-                        }
-                        break;
-                }
-            });
-            f(short_text, multiple_choice, rating, badItem);
-        })();
-
-
-        function valid_short_text(obj) {
-            return $('#' + obj.type + '_input').val() != '';
-        }
-
-        function valid_multiple_choice(obj) {
-            var check = false;
-            obj.choices.forEach(function (item) {
-                if ($('#multiple_choice_' + item.label).is(':checked')) {
-                    check = true;
-                }
-            });
-            return check;
-        }
-
-        function valid_rating(obj) {
-            var check = false;
-            for (var i = obj.range.start; i <= obj.range.end; i++) {
-                if ($('#rating_' + i).is(':checked')) {
-                    check = true;
-                    break;
-                }
-            }
-            return check;
-        }
-    }
-
-    function addChecking() {
+    function choice() {
         $('label').click(function () {
             var current = $(this);
             if (current.attr('for').includes('rating')) {
-                var localCurrent = $('[for ^= rating]');
-                if (localCurrent.hasClass('checked')) {
-                    localCurrent.removeClass('checked');
-                } else if (localCurrent.hasClass('unchecked')) {
-                    localCurrent.removeClass('unchecked');
-                }
-                current.addClass('checked');
+                radio(current);
             } else {
-                if (current.hasClass('checked')) {
-                    current.addClass('unchecked');
-                    current.removeClass('checked');
-                } else {
-                    current.addClass('checked');
-                    current.removeClass('unchecked');
-                }
+                checkbox(current);
             }
         });
+
+        function radio(current) {
+            var localCurrent = $('[for ^= rating]');
+            if (localCurrent.hasClass('checked')) {
+                localCurrent.removeClass('checked');
+            } else {
+                localCurrent.removeClass('unchecked');
+            }
+            current.addClass('checked');
+        }
+
+        function checkbox(current) {
+            if (current.hasClass('checked')) {
+                current.addClass('unchecked');
+                current.removeClass('checked');
+            } else {
+                current.addClass('checked');
+                current.removeClass('unchecked');
+            }
+        }
+
     }
 
-    function animation(obj) {
-        var speed = 25;
-        //noinspection JSUnresolvedFunction
-        $(document).on('mousewheel', function (event) {
-            //noinspection JSValidateTypes
+    function validAllForm(obj, callFunction) {
+        /**
+         * Validator constructor
+         */
+        function Validator() {
+        }
 
+        Validator.prototype.validShortText = function (obj) {
+            return $('#' + obj.type + '_input').val() != '';
+        };
+
+        Validator.prototype.validMultipleChoice = function (obj) {
+            for (var i = 0; i < obj.choices.length; i++) {
+                if ($('#multiple_choice_' + obj.choices[i].label).is(':checked')) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        
+        Validator.prototype.validRating = function (obj) {
+            for (var i = obj.range.start; i <= obj.range.end; i++) {
+                if ($('#rating_' + i).is(':checked')) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        (function () {
+            var validator = new Validator();
+            var badItem = getBadItem(obj, validator);
+            callFunction.call(validator, badItem);
+        })();
+
+        function getBadItem(obj, validator) {
+            for (var i = 0; i < obj.fields.length; i++) {
+                switch (obj.fields[i].type) {
+                    case 'short_text':
+                        if (!validator.validShortText(obj.fields[i])) {
+                            return obj.fields[i];
+                        }
+                        break;
+                    case 'multiple_choice':
+                        if (!validator.validMultipleChoice(obj.fields[i])) {
+                            return obj.fields[i];
+                        }
+                        break;
+                    case 'rating':
+                        if (!validator.validRating(obj.fields[i])) {
+                            return obj.fields[i];
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        }
+    }
+
+    function animateTransition(obj) {
+        $(document).on('mousewheel', function (event) {
             obj.fields.forEach(function (item, index) {
                 if (event.originalEvent.wheelDelta >= 0) {
                     // up
-                    scroll(-1);
+                    scroll(obj, item, index, -1);
                 } else {
                     // down
-                    scroll(1);
+                    scroll(obj, item, index, 1);
                 }
-
-                function scroll(sign) {
-                    var current = $('#' + item.type + '_form');
-                    var opacity = current.css('opacity');
-                    if (obj.fields[index + sign] && opacity == '1') {
-                        var next = $('#' + obj.fields[index + sign].type + '_form');
-                        next.removeClass('disabled');
-                        next.animate({
-                            opacity: '1'
-                        }, speed);
-                        $('body').animate({
-                            scrollTop: next.position().top
-                        });
-
-                        current.animate({
-                            opacity: '0.4'
-                        });
-                        current.addClass('disabled');
-                    }
-                }
-
             });
 
         });
     }
 
-    function footer(obj) {
-        $('<div/>', {
-            id: 'footer'
-        }).appendTo('body');
+    function scroll(obj, item, index, sign) {
+        var speed = 25;
+        var current = $('#' + item.type + '_form');
+        if (obj.fields[index + sign] && current.css('opacity') == '1') {
+            setNext();
+            setCurrent();
+        }
 
+        function setNext() {
+            var next = $('#' + obj.fields[index + sign].type + '_form');
+            next
+                .removeClass('disabled')
+                .animate({
+                    opacity: '1'
+                }, speed);
+            $('body').animate({
+                scrollTop: next.position().top
+            });
+        }
+
+        function setCurrent() {
+            current.animate({
+                opacity: '0.4'
+            }, speed).addClass('disabled');
+        }
+    }
+
+    function createFooter(obj, creator) {
+        var footer = creator.createFooter('body', 'footer');
         (function addNavigation() {
-            var list = $('<ul/>', {
-                id: 'button_list',
-                class: 'footer'
-            }).appendTo('#footer');
-
-            $('<button/>', {
-                id: 'up_button',
-                text: 'Up',
-                class: 'navigate_button'
-            }).appendTo(list).click(function () {
-                obj.fields.forEach(function (item, index) {
-                    var current = $('#' + item.type + '_form');
-                    var opacity = current.css('opacity');
-                    if (opacity == '1' && obj.fields[index - 1]) {
-                        var prev = $('#' + obj.fields[index - 1].type + '_form');
-                        var position = prev != undefined ? prev.position().top : current.position().top;
-                        if (position != undefined) {
-                            $('body').animate({
-                                scrollTop: position
-                            });
-                        }
-                    }
-                });
-            });
-
-            $('<button/>', {
-                id: 'down_button',
-                text: 'Down',
-                class: 'navigate_button'
-            }).appendTo(list).click(function () {
-                obj.fields.forEach(function (item, index) {
-                    var current = $('#' + item.type + '_form');
-                    var opacity = current.css('opacity');
-                    if (opacity == '1' && obj.fields[index + 1]) {
-                        var next = $('#' + obj.fields[index + 1].type + '_form');
-                        var position = next != undefined ? next.position().top : current.position().top;
-                        $('body').animate({
-                            scrollTop: position
-                        });
-                    }
-                });
-            });
-
+            var list = createList();
+            createButtons(list);
             createProgressBar(list);
         })();
+
+        function createList() {
+            return $('<ul/>', {
+                id: 'button_list',
+                class: 'footer'
+            }).appendTo(footer);
+        }
+
+        function createButtons(list) {
+            creator.createButton(list, 'up_button', 'Up', 'navigate_button', function () {
+                obj.fields.forEach(function (item, index) {
+                    scroll(obj, item, index, -1);
+                });
+            });
+
+            creator.createButton(list, 'down_button', 'Down', 'navigate_button', function () {
+                obj.fields.forEach(function (item, index) {
+                    scroll(obj, item, index, 1);
+                });
+            });
+        }
 
         function createProgressBar(list) {
             var progress = $('<div/>', {
@@ -366,16 +385,29 @@
         var globalValue = 0;
         var progress = $('#progress');
         var addValue = progress.width() / obj.fields.length;
-        validAllForm(obj, function (short_text, multiple_choice, rating) {
-            if (short_text) {
-                globalValue += addValue;
-            }
-            if (multiple_choice) {
-                globalValue += addValue;
-            }
-            if (rating) {
-                globalValue += addValue;
-            }
+        validAllForm(obj, function () {
+            var validator = this;
+            obj.fields.forEach(function (item) {
+                switch (item.type) {
+                    case 'short_text':
+                        if (validator.validShortText(item)) {
+                            globalValue += addValue;
+                        }
+                        break;
+                    case 'multiple_choice':
+                        if (validator.validMultipleChoice(item)) {
+                            globalValue += addValue;
+                        }
+                        break;
+                    case 'rating':
+                        if (validator.validRating(item)) {
+                            globalValue += addValue;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            });
         });
 
         (function changeProgressBarStyle() {
@@ -387,5 +419,4 @@
         })();
     }
 
-})
-(jQuery);
+})(jQuery);

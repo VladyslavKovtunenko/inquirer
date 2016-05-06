@@ -1,0 +1,35 @@
+.footer {
+    background-color: #37404a;
+    position: fixed;
+    width: 100%;
+    height: 50px;
+    left: 0;
+    bottom: 0;
+    padding: 5px 5px 5px 5px;
+    margin: 0;
+}
+
+.progress {
+    background-color: #37404a;
+    float: right;
+    width: 350px;
+    appearance: none;
+    height: 24px;
+    margin-right: 50px;
+    position: relative;
+    border-radius: 5px;
+}
+
+.percent {
+    color: white;
+    padding: 3px;
+    position: absolute;
+    left: 50%;
+}
+
+.bar {
+    border-radius: 5px;
+    height: 24px;
+    background-color: #4fb0ae;
+    width: 0;
+}
