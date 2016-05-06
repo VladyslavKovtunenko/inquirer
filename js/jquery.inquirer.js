@@ -46,12 +46,19 @@
         }, 100);
     }
 
-    function addStyle() {
+    function addStyle(obj) {
         $('#submit_button').addClass('button');
         $('[id $= question]').addClass('question');
-        $('[id $= form]').addClass('wrapper').animate({
-            opacity: '0.1'
-        });
+        $('[id $= form]').addClass('wrapper');
+        obj.fields.forEach(function (item, index) {
+            if (index != 0) {
+                var current = $('#' + item.type + '_form');
+                var speed = 25;
+                current.animate({
+                    opacity: '0.4'
+                }, speed);
+            }
+        })
     }
 
     function short_text(obj, tag) {
@@ -235,7 +242,7 @@
         //noinspection JSUnresolvedFunction
         $(document).scroll(function () {
             //noinspection JSValidateTypes
-            var top = $(this).scrollTop() + 150;
+            var top = $(this).scrollTop() + 50;
             obj.fields.forEach(function (item) {
                 var current = $('#' + item.type + '_form');
                 var positionTop = current.position().top;
@@ -308,22 +315,29 @@
                 });
             });
 
-            $('<progress/>', {
-                id: 'progress',
-                class: 'progress',
-                min: '0',
-                max: '100',
-                value: '0'
-            }).appendTo(list);
-
+            createProgressBar(list);
         })();
+
+        function createProgressBar(list) {
+            var progress = $('<div/>', {
+                id: 'progress',
+                class: 'progress'
+            }).appendTo(list);
+            $('<span/>', {
+                id: 'percents',
+                class: 'percent'
+            }).appendTo(progress);
+            $('<div/>', {
+                id: 'bar',
+                class: 'bar'
+            }).appendTo(progress);
+        }
     }
 
     function listenProgress(obj) {
         var globalValue = 0;
-        var addValue = 100 / obj.fields.length;
         var progress = $('#progress');
-        progress.attr('value', globalValue);
+        var addValue = progress.width() / obj.fields.length;
         validAllForm(obj, function (short_text, multiple_choice, rating) {
             if (short_text) {
                 globalValue += addValue;
@@ -335,7 +349,15 @@
                 globalValue += addValue;
             }
         });
-        progress.attr('value', globalValue);
+
+        (function changeProgressBarStyle() {
+            var currentPercent = (globalValue * 100) / progress.width();
+
+            $('#percents').text(currentPercent.toFixed(0).toString() + '%');
+            $('#bar').css({
+                width: globalValue
+            });
+        })();
     }
 
 })

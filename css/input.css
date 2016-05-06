@@ -40,18 +40,27 @@ input[type="radio"] {
     bottom: 0;
 }
 
-progress {
+.progress {
     background-color: #37404a;
     float: right;
     width: 350px;
     appearance: none;
     height: 24px;
     margin-right: 50px;
+    position: relative;
+    border-radius: 5px;
 }
 
-progress::-webkit-progress-bar {
-    background-color: #37404a;
+.percent {
+    color: white;
+    padding: 3px;
+    position: absolute;
+    left: 50%;
 }
-progress::-webkit-progress-value {
+
+.bar {
+    border-radius: 5px;
+    height: 24px;
     background-color: #4fb0ae;
+    width: 0;
 }
