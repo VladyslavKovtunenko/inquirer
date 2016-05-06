@@ -64,3 +64,7 @@ input[type="radio"] {
     background-color: #4fb0ae;
     width: 0;
 }
+
+.disabled {
+    pointer-events: none;
+}

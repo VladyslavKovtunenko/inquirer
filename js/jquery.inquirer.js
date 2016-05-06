@@ -256,10 +256,12 @@
                         opacity: '1',
                         scrollTop: positionTop
                     }, speed);
+                    current.removeClass('disabled');
                 } else {
                     current.animate({
                         opacity: '0.4'
                     }, speed);
+                    current.addClass('disabled');
                 }
             }
 
@@ -352,7 +354,6 @@
 
         (function changeProgressBarStyle() {
             var currentPercent = (globalValue * 100) / progress.width();
-
             $('#percents').text(currentPercent.toFixed(0).toString() + '%');
             $('#bar').css({
                 width: globalValue
