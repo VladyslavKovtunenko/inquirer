@@ -1,0 +1,12 @@
+{
+  "name": "inquirer",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "latest",
+    "nconf": "latest",
+    "winston": "latest",
+    "serve-favicon": "~2.3.0",
+    "body-parser": "~1.13.2",
+    "ejs": "~2.3.3"
+  }
+}
