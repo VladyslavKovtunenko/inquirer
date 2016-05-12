@@ -3,10 +3,10 @@
 
   "db": {
     "db_name": "questions",
-    "username": "root",
-    "password": "5November",
+    "username": "postgres",
+    "password": "postgres",
     "host": "localhost",
-    "port": "3306",
-    "dialect": "mysql"
+    "port": "5432",
+    "dialect": "postgres"
   }
 }

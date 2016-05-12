@@ -1,31 +1,32 @@
 var Sequelize = require('sequelize');
-var config = require('../lib/config/config.json').db;
-var sequelize = new Sequelize(
-    config.db_name,
-    config.username,
-    config.password, {
-        host: config.host,
-        port: config.port,
-        dialect: config.dialect
+var connection = require('./connection')(Sequelize);
+var creator = require('./creator')(connection, Sequelize);
+
+var Question = connection.define('question', {
+    question: Sequelize.JSON
+});
+
+
+module.exports.send = function (data) {
+    Question
+        .sync()
+        .then(function () {
+            return creator.create({
+                question: data
+            });
+        });
+};
+
+module.exports.get = function () {
+    return new Promise(function (resolve, reject) {
+        Question
+            .findAll()
+            .then(function (question) {
+                var arr = [];
+                question.forEach(function (item) {
+                    arr.push(item.dataValues.question);
+                });
+                resolve(arr);
+            })
     });
-
-var User = sequelize.define('user', {
-    firstName: {
-        type: Sequelize.STRING
-    },
-    lastName: {
-        type: Sequelize.STRING
-    }
-});
-
-// User.sync().then(function () {
-//    return User.create({
-//        firstName: 'John',
-//        lastName: 'Smith'
-//    });
-// });
-
-User.findOne().then(function (user) {
-    console.log(user.get('firstName') + ' ' + user.get('lastName'));
-});
-
+};
