@@ -6,7 +6,6 @@ var Question = connection.define('question', {
     question: Sequelize.JSON
 });
 
-
 module.exports.send = function (data) {
     Question
         .sync()
@@ -30,3 +29,12 @@ module.exports.get = function () {
             })
     });
 };
+
+module.exports.update = function () {
+
+};
+
+module.exports.delete = function () {
+    
+};
+

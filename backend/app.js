@@ -23,6 +23,7 @@ app.use(function (req, res) {
     switch (req.url) {
         case '/':
             /* (GET) get view */
+            
             res.sendFile('/home/someone/Projects/js/inquirer/frontend/view/index.html');
             break;
         case '/api/questions':
@@ -42,16 +43,28 @@ app.use(function (req, res) {
             break;
         case '/api/question':
             /* (POST) add new question */
+            
             if (req.method == 'POST') {
                 dao.send(JSON.stringify(req.body));
+                res.end();
             } else {
                 res.send(400, 'Bad request!');
             }
-            res.end();
             break;
         case '/api/question/id':
             /* (PUT) update question */
             /* (DELETE) delete question */
+            
+            if (req.method == 'PUT') {
+                /* update */
+                
+            } else if (req.method == 'DELETE') {
+                /* delete */
+                
+            } else {
+                res.send(400, 'Bad request!');
+            }
+            
             res.end();
             break;
         default:
@@ -67,10 +80,8 @@ function generateValidObj(arr) {
 
     if (arr.length > 1) {
         arr.forEach(function (item) {
-            var tempArr = JSON.parse(item).fields;
-            tempArr.forEach(function (item) {
-                obj.fields.push(item);
-            });
+            var tempArr = JSON.parse(item);
+            obj.fields.push(tempArr);
         });
     } else {
         var tempArr = JSON.parse(arr[0]);

@@ -1,6 +1,6 @@
 ;(function ($) {
+    addQuestion();
     getQuestionList();
-    // addQuestion();
 
     function getQuestionList() {
         $.ajax({
@@ -9,6 +9,7 @@
             contentType: 'application/json',
             dataType: 'json',
             success: function (data) {
+                // console.log(data);
                 $().inquirer('#add', JSON.stringify(data));
             }
         });
@@ -39,7 +40,7 @@
                 }
             ]
         };
-        
+
         $.ajax({
             url: 'http://localhost:3000/api/question',
             type: 'POST',
