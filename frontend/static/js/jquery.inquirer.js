@@ -1,156 +1,149 @@
 ;(function ($) {
 
-    /**
-     *  export point
-     */
     $.fn.inquirer = function (tag, questions) {
         new Inquirer(tag, questions);
         return this;
     };
 
-    /**
-     * Inquirer constructor
-     */
-    function Inquirer(tag, question) {
+    function Inquirer(tag, questions) {
         this.tag = tag;
-        this.question = question;
+        this.questions = questions;
         this.init();
     }
-
     Inquirer.prototype.init = function () {
-        generateByQuestionType.call(this, JSON.parse(this.question));
+        generatePage.call(this, this.parse());
+    };
+    Inquirer.prototype.parse = function () {
+        var arr = JSON.parse(this.questions);
+        arr.fields.forEach(function (item) {
+            item.question = JSON.parse(item.question);
+        });
+        return arr;
     };
 
-    /**
-     * Creator constructor
-     */
-    function Creator() {
+    function Constructor() {
     }
-
-    Creator.prototype.createMainLine = function (tag, id, styleClass) {
+    Constructor.prototype.createMainLine = function (tag, id, styleClass) {
         return $('<li/>', {
             id: id,
             class: styleClass
         }).appendTo(tag);
     };
-
-    Creator.prototype.createQuestion = function (tag, id, text, styleClass) {
+    Constructor.prototype.createQuestion = function (tag, id, text, styleClass) {
         return $('<h1/>', {
             id: id,
             text: text,
             class: styleClass
         }).appendTo(tag);
     };
-
-    Creator.prototype.createInput = function (tag, id, type, name) {
+    Constructor.prototype.createInput = function (tag, id, type) {
         return $('<input/>', {
             id: id,
-            type: type,
-            name: name
+            type: type
         }).appendTo(tag);
     };
-
-    Creator.prototype.createLabel = function (tag, text, what) {
+    Constructor.prototype.createLabel = function (tag, id, text) {
         return $('<label/>', {
-            text: text,
-            for: what
+            id: id,
+            text: text
         }).appendTo(tag);
     };
-
-    Creator.prototype.createButton = function (tag, id, text, styleClass, eventListener) {
-        var button;
-        if (eventListener) {
-            button = $('<button/>', {
+    Constructor.prototype.createButton = function (tag, id, text, styleClass, eventListener) {
+        return $('<button/>', {
                 id: id,
                 text: text,
                 class: styleClass
             }).appendTo(tag).click(eventListener);
-        } else {
-            button = $('<button/>', {
-                id: id,
-                text: text,
-                class: styleClass
-            }).appendTo(tag);
-        }
-        return button;
     };
-
-    Creator.prototype.createFooter = function (tag, id) {
+    Constructor.prototype.createFooter = function (tag, id) {
         return $('<div/>', {
             id: id
         }).appendTo(tag);
     };
 
-    function generateByQuestionType(questionsObj) {
-        var creator = new Creator();
+    function generatePage(mainObj) {
+        var constructor = new Constructor();
         var mainList = $('<ul/>').appendTo(this.tag);
 
-        questionsObj.fields.forEach(function (item) {
-            switch (item.type) {
+        mainObj.fields.forEach(function (item) {
+            var questionType = item.question.type;
+            switch (questionType) {
                 case 'short_text':
-                    short_text(item, mainList, creator);
+                    generateShortTextQuestion(item, mainList, constructor);
                     break;
                 case 'multiple_choice':
-                    multiple_choice(item, mainList, creator);
+                    generateMultipleChoiceQuestion(item, mainList, constructor);
                     break;
                 case 'rating':
-                    rating(item, mainList, creator);
+                    generateRatingQuestion(item, mainList, constructor);
                     break;
                 default:
                     break;
             }
         });
 
-        initOpacity(questionsObj);
-        submitButton(questionsObj, mainList, creator);
-        choice(questionsObj);
-        animateTransition(questionsObj);
-        createFooter(questionsObj, creator);
+        initOpacity(mainObj);
+        submitButton(mainObj, mainList, constructor);
+        choice(mainObj);
+        animateTransition(mainObj);
+        createFooter(mainObj, constructor);
         setInterval(function () {
-            listenProgress(questionsObj)
+            listenProgress(mainObj)
         }, 250);
     }
 
-    function short_text(obj, tag, creator) {
-        var form = creator.createMainLine(tag, 'short_text_form', 'wrapper');
+    /*
+     *
+     *      Generate id for each elements:
+     *          1. {    short_text_{id} ||
+     *                  multiple_choice_{id} ||
+     *                  rating_{id} }                       - for main form
+     *          2. {1} + _question                          - for questions
+     *          3. {1} + _input                             - for input
+     *          4. {1} + _{choice || rating}_{id}           - for choices
+     */
+
+    function generateShortTextQuestion(obj, tag, creator) {
+        var mainID = 'short_text_' + obj.id;
+        var form = creator.createMainLine(tag, mainID, 'wrapper');
         (function createContent() {
-            creator.createQuestion(form, 'short_text_question', obj.question, 'question');
-            creator.createInput(form, 'short_text_input', 'text');
+            creator.createQuestion(form, mainID + '_question', obj.question.question, 'question');
+            creator.createInput(form, mainID + '_input', 'text');
         })();
     }
-
-    function multiple_choice(obj, tag, creator) {
-        var form = creator.createMainLine(tag, 'multiple_choice_form', 'wrapper');
+    function generateMultipleChoiceQuestion(obj, tag, creator) {
+        var mainID = 'multiple_choice_' + obj.id;
+        var form = creator.createMainLine(tag, mainID, 'wrapper');
         (function createContent() {
-            creator.createQuestion(form, 'multiple_choice_question', obj.question, 'question');
+            creator.createQuestion(form, mainID + '_question', obj.question.question, 'question');
             var list = $('<dl/>').appendTo(form);
-            obj.choices.forEach(function (item) {
+            obj.question.choices.forEach(function (item, index) {
                 var line = $('<dt/>').appendTo(list);
-                var id = 'multiple_choice_' + item.label;
-                creator.createInput(line, id, 'checkbox');
-                creator.createLabel(line, item.label, id);
+                var id = mainID + '_choice_' + index;
+                // creator.createInput(line, id, 'checkbox');
+                creator.createLabel(line, id, item.label);
             });
         })();
     }
-
-    function rating(obj, tag, creator) {
-        var form = creator.createMainLine(tag, 'rating_form', 'wrapper');
+    function generateRatingQuestion(obj, tag, creator) {
+        var mainID = 'rating_' + obj.id;
+        var form = creator.createMainLine(tag, mainID, 'wrapper');
         (function createContent() {
-            creator.createQuestion(form, 'rating_question', obj.question, 'question');
+            creator.createQuestion(form, mainID + '_question', obj.question.question, 'question');
             var list = $('<dl/>').appendTo(form);
-            for (var i = obj.range.start; i <= obj.range.end; i++) {
+            for (var i = obj.question.range.start; i <= obj.question.range.end; i++) {
                 var line = $('<dt/>').appendTo(list);
-                var id = 'rating_' + i;
-                creator.createInput(line, id, 'radio', 'rating');
-                creator.createLabel(line, i, id);
+                var id = mainID + '_rating_' + i;
+                // console.log(id);
+                // creator.createInput(line, id, 'radio', 'rating');
+                creator.createLabel(line, id, i);
             }
         })();
     }
-
     function initOpacity(obj) {
         var speed = 25;
         obj.fields.forEach(function (item, index) {
-            var current = $('#' + item.type + '_form');
+            var current = $('#' + item.question.type + '_' + item.id);
             if (index != 0) {
                 current.animate({
                     opacity: '0.4'
@@ -162,7 +155,6 @@
             }
         });
     }
-
     function submitButton(obj, tag, creator) {
         creator.createButton(tag, 'submit_button', 'Submit', 'button', function () {
             validAllForm(obj, function (badItem) {
@@ -178,14 +170,14 @@
             function setOpacityForAllForm() {
                 var speed = 25;
                 obj.fields.forEach(function (item) {
-                    $('#' + item.type + '_form').animate({
+                    $('#' + item.question.type + '_' + item.id).animate({
                         opacity: '0.4'
                     }, speed).addClass('disabled');
                 });
             }
 
             function activateBadForm(badItem) {
-                $('#' + badItem.type + '_form')
+                $('#' + badItem.question.type + '_' + badItem.id)
                     .removeClass('disabled')
                     .animate({
                         opacity: '1'
@@ -194,17 +186,17 @@
 
             function bodyScroll(badItem) {
                 $('body').animate({
-                    scrollTop: $('#' + badItem.type + '_form').position().top
+                    scrollTop: $('#' + badItem.question.type + '_' + badItem.id).position().top
                 });
             }
 
         });
     }
-
     function choice() {
         $('label').click(function () {
             var current = $(this);
-            if (current.attr('for').includes('rating')) {
+            if (current.attr('id').includes('rating')) {
+                // console.log(current);
                 radio(current);
             } else {
                 checkbox(current);
@@ -212,11 +204,12 @@
         });
 
         function radio(current) {
-            var localCurrent = $('[for ^= rating]');
-            if (localCurrent.hasClass('checked')) {
-                localCurrent.removeClass('checked');
-            } else {
-                localCurrent.removeClass('unchecked');
+            var number = 'rating_' + current.context.id.charAt(7);
+            console.log(number);
+            var str = '[id ^= ' + number + ']';
+            var all = $(str);
+            if (all.hasClass('checked')) {
+                all.removeClass('checked');
             }
             current.addClass('checked');
         }
@@ -232,30 +225,33 @@
         }
 
     }
-
     function validAllForm(obj, callFunction) {
-        /**
-         * Validator constructor
-         */
+
         function Validator() {
         }
-
         Validator.prototype.validShortText = function (obj) {
-            return $('#' + obj.type + '_input').val() != '';
+            return $('#' + obj.question.type + '_' + obj.id + '_input').val() != '';
         };
-
         Validator.prototype.validMultipleChoice = function (obj) {
-            for (var i = 0; i < obj.choices.length; i++) {
-                if ($('#multiple_choice_' + obj.choices[i].label).is(':checked')) {
+            for (var i = 0; i < obj.question.choices.length; i++) {
+                var id = '#' + obj.question.type + '_' + obj.id + '_choice_' + i;
+                // if ($(id).is(':checked')) {
+                //     return true;
+                // }
+                if ($(id).hasClass('checked')) {
                     return true;
                 }
             }
             return false;
         };
-        
         Validator.prototype.validRating = function (obj) {
-            for (var i = obj.range.start; i <= obj.range.end; i++) {
-                if ($('#rating_' + i).is(':checked')) {
+            var mainID = obj.question.type + '_' + obj.id;
+            for (var i = obj.question.range.start; i <= obj.question.range.end; i++) {
+                var id = '#' + mainID + '_rating_' + i;
+                // if ($(id).is(':checked')) {
+                //     return true;
+                // }
+                if ($(id).hasClass('checked')) {
                     return true;
                 }
             }
@@ -270,7 +266,7 @@
 
         function getBadItem(obj, validator) {
             for (var i = 0; i < obj.fields.length; i++) {
-                switch (obj.fields[i].type) {
+                switch (obj.fields[i].question.type) {
                     case 'short_text':
                         if (!validator.validShortText(obj.fields[i])) {
                             return obj.fields[i];
@@ -293,7 +289,6 @@
 
         }
     }
-
     function animateTransition(obj) {
         $(document).on('mousewheel', function (event) {
             obj.fields.forEach(function (item, index) {
@@ -308,17 +303,16 @@
 
         });
     }
-
     function scroll(obj, item, index, sign) {
         var speed = 25;
-        var current = $('#' + item.type + '_form');
+        var current = $('#' + item.question.type + '_' + item.id);
         if (obj.fields[index + sign] && current.css('opacity') == '1') {
             setNext();
             setCurrent();
         }
 
         function setNext() {
-            var next = $('#' + obj.fields[index + sign].type + '_form');
+            var next = $('#' + obj.fields[index + sign].question.type + '_' + obj.fields[index + sign].id);
             next
                 .removeClass('disabled')
                 .animate({
@@ -335,7 +329,6 @@
             }, speed).addClass('disabled');
         }
     }
-
     function createFooter(obj, creator) {
         var footer = creator.createFooter('body', 'footer');
         (function addNavigation() {
@@ -380,7 +373,6 @@
             }).appendTo(progress);
         }
     }
-
     function listenProgress(obj) {
         var globalValue = 0;
         var progress = $('#progress');
@@ -388,7 +380,7 @@
         validAllForm(obj, function () {
             var validator = this;
             obj.fields.forEach(function (item) {
-                switch (item.type) {
+                switch (item.question.type) {
                     case 'short_text':
                         if (validator.validShortText(item)) {
                             globalValue += addValue;

@@ -1,6 +1,6 @@
 ;(function ($) {
-    addQuestion();
     getQuestionList();
+    // addQuestion();
 
     function getQuestionList() {
         $.ajax({
@@ -16,33 +16,19 @@
     }
 
     function addQuestion() {
-        var questionData = {
-            type: 'multiple_choice',
-            question: 'Who are you?',
-            choices: [
+        var questionData =
                 {
-                    label: 'iron-man'
-                },
-                {
-                    label: 'batman'
-                },
-                {
-                    label: 'cat'
-                },
-                {
-                    label: 'human'
-                },
-                {
-                    label: 'lol'
-                },
-                {
-                    label: 'John'
-                }
-            ]
-        };
+                    type: 'rating',
+                    question: 'Skilllllllllllll?',
+                    range: {
+                        start: '1',
+                        end: '3'
+                    }
+                };
+
 
         $.ajax({
-            url: 'http://localhost:3000/api/question',
+            url: 'http://localhost:3000/api/questions',
             type: 'POST',
             contentType: 'application/json',
             dataType: 'json',

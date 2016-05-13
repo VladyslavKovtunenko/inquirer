@@ -30,11 +30,11 @@ app.use(function (req, res) {
             /* (GET) get questions list */
             if (req.method == 'GET') {
                 dao.get().then(function (arr) {
-                    var validObj = generateValidObj(arr);
+                    var jsonArr = JSON.stringify(arr);
                     res.writeHead(200, {
                         'Content-Type': 'application/json'
                     });
-                    res.write(validObj);
+                    res.write(jsonArr);
                     res.end();
                 });
             } else {
@@ -42,7 +42,7 @@ app.use(function (req, res) {
             }
             break;
         case '/api/question':
-            /* (POST) add new question */
+            /* (POST) add new questions */
             
             if (req.method == 'POST') {
                 dao.send(JSON.stringify(req.body));
@@ -51,9 +51,9 @@ app.use(function (req, res) {
                 res.send(400, 'Bad request!');
             }
             break;
-        case '/api/question/id':
-            /* (PUT) update question */
-            /* (DELETE) delete question */
+        case '/api/questions/id':
+            /* (PUT) update questions */
+            /* (DELETE) delete questions */
             
             if (req.method == 'PUT') {
                 /* update */
@@ -72,21 +72,3 @@ app.use(function (req, res) {
             res.send(404, 'Page not found!');
     }
 });
-
-function generateValidObj(arr) {
-    var obj = {
-        fields: []
-    };
-
-    if (arr.length > 1) {
-        arr.forEach(function (item) {
-            var tempArr = JSON.parse(item);
-            obj.fields.push(tempArr);
-        });
-    } else {
-        var tempArr = JSON.parse(arr[0]);
-        obj.fields.push(tempArr);
-    }
-
-    return JSON.stringify(obj);
-}

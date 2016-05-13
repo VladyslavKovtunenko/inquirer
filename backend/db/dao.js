@@ -11,7 +11,7 @@ module.exports.send = function (data) {
         .sync()
         .then(function () {
             return creator.create({
-                question: data
+                questions: data
             });
         });
 };
@@ -21,9 +21,15 @@ module.exports.get = function () {
         Question
             .findAll()
             .then(function (question) {
-                var arr = [];
+                var arr = {
+                    fields: []
+                };
                 question.forEach(function (item) {
-                    arr.push(item.dataValues.question);
+                    var obj = {
+                        question: item.dataValues.question,
+                        id: item.dataValues.id
+                    };
+                    arr.fields.push(obj);
                 });
                 resolve(arr);
             })
@@ -35,6 +41,6 @@ module.exports.update = function () {
 };
 
 module.exports.delete = function () {
-    
+
 };
 
