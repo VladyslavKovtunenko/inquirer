@@ -6,12 +6,12 @@ var Question = connection.define('question', {
     question: Sequelize.JSON
 });
 
-module.exports.send = function (data) {
+module.exports.set = function (data) {
     Question
         .sync()
         .then(function () {
             return creator.create({
-                questions: data
+                question: data
             });
         });
 };
@@ -21,26 +21,43 @@ module.exports.get = function () {
         Question
             .findAll()
             .then(function (question) {
-                var arr = {
-                    fields: []
-                };
-                question.forEach(function (item) {
-                    var obj = {
-                        question: item.dataValues.question,
-                        id: item.dataValues.id
-                    };
-                    arr.fields.push(obj);
-                });
+                var arr = getData(question);
                 resolve(arr);
-            })
+            });
+
+        function getData(question) {
+            var arr = {};
+            arr.fields = [];
+            question.forEach(function (item) {
+                var obj = {
+                    question: item.dataValues.question,
+                    id: item.dataValues.id
+                };
+                arr.fields.push(obj);
+            });
+            return arr;
+        }
+
     });
 };
 
-module.exports.update = function () {
-
+module.exports.update = function (id, data) {
+    Question
+        .update({
+            question: data
+        }, {
+            where: {
+                id: id
+            }
+        });
 };
 
-module.exports.delete = function () {
-
+module.exports.delete = function (id) {
+    Question
+        .destroy({
+            where: {
+                id: id
+            }
+        });
 };
 

@@ -6,6 +6,7 @@ var path = require('path');
 var config = require('lib/config');
 var log = require('lib/logger')(module);
 var dao = require('db/dao');
+var fs = require('fs');
 
 var app = express();
 
@@ -23,8 +24,7 @@ app.use(function (req, res) {
     switch (req.url) {
         case '/':
             /* (GET) get view */
-            
-            res.sendFile('/home/someone/Projects/js/inquirer/frontend/view/index.html');
+            fs.createReadStream('frontend/view/index.html').pipe(res);
             break;
         case '/api/questions':
             /* (GET) get questions list */
@@ -43,32 +43,72 @@ app.use(function (req, res) {
             break;
         case '/api/question':
             /* (POST) add new questions */
-            
             if (req.method == 'POST') {
-                dao.send(JSON.stringify(req.body));
-                res.end();
+                dao.set(JSON.stringify(req.body));
             } else {
                 res.send(400, 'Bad request!');
             }
-            break;
-        case '/api/questions/id':
-            /* (PUT) update questions */
-            /* (DELETE) delete questions */
-            
-            if (req.method == 'PUT') {
-                /* update */
-                
-            } else if (req.method == 'DELETE') {
-                /* delete */
-                
-            } else {
-                res.send(400, 'Bad request!');
-            }
-            
-            res.end();
             break;
         default:
-            /* 404 */
-            res.send(404, 'Page not found!');
+            /* (PUT) update questions */
+            /* (DELETE) delete questions */
+            if (req.url.startsWith('/api/question/')) {
+                if (req.method == 'DELETE') {
+                    generateUrls().then(function (urls) {
+                        deleteData(urls);
+                    });
+                } else if (req.method == 'PUT') {
+                    generateUrls().then(function (urls) {
+                        updateData(urls);
+                    });
+                } else {
+                    res.send(400, 'Bad request!');
+                }
+            } else {
+                res.send(404, 'Not found!')
+            }
+            break;
+    }
+
+    function deleteData(urls) {
+        for (var i = 0; i < urls.length; i++) {
+            if (req.url == urls[i].url) {
+                /* delete */
+                dao.delete(urls[i].id);
+                res.send(201, 'Deleted complete!');
+                break;
+            }
+        }
+
+        res.send(404, 'Don\'t valid id!')
+    }
+
+    function updateData(urls) {
+        for (var i = 0; i < urls.length; i++) {
+            if (req.url == urls[i].url) {
+                /* update */
+                dao.update(urls[i].id, JSON.stringify(req.body));
+                res.send(201, 'Updated complete!');
+                break;
+            }
+        }
+
+        res.send(404, 'Don\'t valid id!')
+    }
+
+    function generateUrls() {
+        return new Promise(function (resolve, reject) {
+            dao.get().then(function (arr) {
+                var urls = [];
+
+                arr.fields.forEach(function (item) {
+                    urls.push({
+                        url: '/api/question/' + item.id,
+                        id: item.id
+                    });
+                });
+                resolve(urls);
+            });
+        });
     }
 });

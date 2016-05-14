@@ -170,7 +170,7 @@
 
         function createContent() {
             var form = creator.createLine(tag, formId, 'wrapper');
-            creator.createQuestion(form, questionId, obj.question.question, 'question');
+            creator.createQuestion(form, questionId, obj.question.text, 'question');
             creator.createInput(form, inputId, 'text');
         }
     }
@@ -183,7 +183,7 @@
 
         function createContent() {
             var form = creator.createLine(tag, formId, 'wrapper');
-            creator.createQuestion(form, questionId, obj.question.question, 'question');
+            creator.createQuestion(form, questionId, obj.question.text, 'question');
             generateChoicesList(form);
         }
 
@@ -205,7 +205,7 @@
 
         function createContent() {
             var form = creator.createLine(tag, formId, 'wrapper');
-            creator.createQuestion(form, questionId, obj.question.question, 'question');
+            creator.createQuestion(form, questionId, obj.question.text, 'question');
             generateChoicesList(form);
         }
 
