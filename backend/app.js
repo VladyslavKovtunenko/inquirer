@@ -3,9 +3,9 @@ var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var http = require('http');
 var path = require('path');
-var config = require('lib/config');
-var log = require('lib/logger')(module);
-var dao = require('db/dao');
+var config = require('./lib/config');
+var log = require('./lib/logger')(module);
+var dao = require('./db/dao');
 var fs = require('fs');
 
 var app = express();
@@ -38,7 +38,7 @@ app.use(function (req, res) {
                     res.end();
                 });
             } else {
-                res.send(400, 'Bad request!');
+                res.status(400).end('Bad request!');
             }
             break;
         case '/api/question':
@@ -46,7 +46,7 @@ app.use(function (req, res) {
             if (req.method == 'POST') {
                 dao.set(JSON.stringify(req.body));
             } else {
-                res.send(400, 'Bad request!');
+                res.status(400).end('Bad request!');
             }
             break;
         default:
@@ -62,10 +62,10 @@ app.use(function (req, res) {
                         updateData(urls);
                     });
                 } else {
-                    res.send(400, 'Bad request!');
+                    res.status(400).end('Bad request!');
                 }
             } else {
-                res.send(404, 'Not found!')
+                res.status(404).end('Not found!')
             }
             break;
     }
@@ -75,12 +75,12 @@ app.use(function (req, res) {
             if (req.url == urls[i].url) {
                 /* delete */
                 dao.delete(urls[i].id);
-                res.send(201, 'Deleted complete!');
+                res.status(201).end('Deleted complete!');
                 break;
             }
         }
 
-        res.send(404, 'Don\'t valid id!')
+        res.status(404).end('Don\'t valid id!')
     }
 
     function updateData(urls) {
@@ -88,12 +88,11 @@ app.use(function (req, res) {
             if (req.url == urls[i].url) {
                 /* update */
                 dao.update(urls[i].id, JSON.stringify(req.body));
-                res.send(201, 'Updated complete!');
+                res.status(201).end('Updated complete!');
                 break;
             }
         }
-
-        res.send(404, 'Don\'t valid id!')
+        res.status(404).end('Don\'t valid id!')
     }
 
     function generateUrls() {

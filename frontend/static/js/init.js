@@ -72,13 +72,15 @@
      * write only this part)
      */
     function updateQuestion() {
+        var id = 2;
+        
         var updatedData = {
             type: 'short_text',
             text: 'Lol?'
         };
 
         $.ajax({
-            url: 'http://localhost:3000/api/question/2',
+            url: 'http://localhost:3000/api/question/' + id,
             type: 'PUT',
             contentType: 'application/json',
             dataType: 'json',
