@@ -43,6 +43,10 @@
         var mainList = constructor.createList(this.tag);
         var mainObj = this.parseJson();
 
+        if (mainObj.fields.length == 0) {
+            return;
+        }
+
         this.generateContent(mainObj, mainList, constructor);
 
         initOpacity(mainObj);
