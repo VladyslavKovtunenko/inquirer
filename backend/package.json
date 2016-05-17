@@ -9,6 +9,8 @@
     "nconf": "latest",
     "serve-favicon": "~2.3.0",
     "sequelize": "^3.23.0",
-    "winston": "latest"
+    "winston": "latest",
+    "gulp": "latest",
+    "gulp-google-cdn": "latest"
   }
 }

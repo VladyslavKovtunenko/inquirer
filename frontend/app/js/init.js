@@ -28,13 +28,13 @@
      * uncomment method to test api usage
      */
     
-    // getQuestionList();
+    getQuestion();
     // addQuestion();
-    updateQuestion();
+    // updateQuestion();
     // removeQuestion();
 
 
-    function getQuestionList() {
+    function getQuestion() {
         $.ajax({
             url: 'http://localhost:3000/api/questions',
             type: 'GET',
@@ -72,11 +72,11 @@
      * write only this part)
      */
     function updateQuestion() {
-        var id = 3;
+        var id = 5;
         
         var updatedData = {
             type: 'short_text',
-            text: 'So what?'
+            text: 'Crazy?'
         };
 
         $.ajax({
@@ -89,7 +89,7 @@
     }
 
     function removeQuestion() {
-        var id = 1;
+        var id = 4;
 
         $.ajax({
             url: 'http://localhost:3000/api/question/' + id,
