@@ -1,25 +1,26 @@
->1. Installation npm packages:
+Installation npm packages:
+-------------------------
+        1. Go to the backend directory.
+        2. Run 'npm i'.
+        All dependencies from 'package.json' must be downloaded and installed.
+DB usage:
+--------
+        1. Create empty table before reestablishing.
+        2. DB dump in /backend/db/dump.
+        3. Run 'psql table_name < dump_name'.
+Running server:
+---------------------------------------------------
+    * Server running by app.js with environment variables:
+        1.NODE_ENV = development
+        2.NODE_PATH = .
+API requests:
+------------
+        1. /api/questions (GET)
+            * Get all questions from DB, and rendering them.
 
-    * Go to the backend directory.
-    * Run 'npm i'.
-    * All dependencies from 'package.json' must be downloaded and installed.
->2. DB usage
+        2. /api/question (POST)
+            * Add question in DB. Question send by request's body.
 
-    * Create empty table before reestablishing.
-    * DB dump in /backend/db/dump.
-    * Run 'psql table_name < dump_name'.
->3. Server running by app.js with environment variables:
-
-    * NODE_ENV = development
-    * NODE_PATH = .
->4. API requests:
-
-    * /api/questions (GET)
-        Get all questions from DB, and rendering them.
-
-    * /api/question (POST)
-        Add question in DB. Question send by request's body.
-
-    * /api/question/id (PUT or DELETE)
-        Update or delete question from DB by id.
+        3. /api/question/id (PUT or DELETE)
+            * Update or delete question from DB by id.
 
