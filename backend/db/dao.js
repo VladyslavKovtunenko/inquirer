@@ -16,7 +16,18 @@ module.exports.set = function (data) {
         });
 };
 
-module.exports.get = function () {
+module.exports.getById = function (id) {
+    return new Promise(function (resolve, reject) {
+        Question
+            .findById(id)
+            .then(function (question) {
+                resolve(question);
+            });
+
+    })
+};
+
+module.exports.getAll = function () {
     return new Promise(function (resolve, reject) {
         Question
             .findAll()
