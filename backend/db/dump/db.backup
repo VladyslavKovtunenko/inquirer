@@ -1,0 +1,113 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: questions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE questions (
+    id integer NOT NULL,
+    question json,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE questions OWNER TO postgres;
+
+--
+-- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE questions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE questions_id_seq OWNER TO postgres;
+
+--
+-- Name: questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE questions_id_seq OWNED BY questions.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
+
+
+--
+-- Data for Name: questions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY questions (id, question, "createdAt", "updatedAt") FROM stdin;
+3	"{\\"type\\":\\"rating\\",\\"text\\":\\"Crazy?\\",\\"range\\":{\\"start\\":\\"1\\",\\"end\\":\\"7\\"}}"	2016-05-14 19:04:33.139+03	2016-05-14 19:04:33.139+03
+2	"{\\"type\\":\\"short_text\\",\\"text\\":\\"Lol?\\"}"	2016-05-14 18:02:55.717+03	2016-05-14 19:06:12.439+03
+4	"{\\"type\\":\\"rating\\",\\"text\\":\\"Crazy?\\",\\"range\\":{\\"start\\":\\"1\\",\\"end\\":\\"6\\"}}"	2016-05-14 19:07:50.731+03	2016-05-14 19:07:50.731+03
+\.
+
+
+--
+-- Name: questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('questions_id_seq', 4, true);
+
+
+--
+-- Name: questions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY questions
+    ADD CONSTRAINT questions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

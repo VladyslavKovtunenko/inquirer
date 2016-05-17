@@ -19,7 +19,6 @@ http.createServer(app).listen(config.get('server_port'), function () {
     log.info('Express start on port ' + config.get('server_port'));
 });
 
-
 app.use(function (req, res) {
     switch (req.url) {
         case '/':
