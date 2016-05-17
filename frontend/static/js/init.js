@@ -28,9 +28,9 @@
      * uncomment method to test api usage
      */
     
-    getQuestionList();
+    // getQuestionList();
     // addQuestion();
-    // updateQuestion();
+    updateQuestion();
     // removeQuestion();
 
 
@@ -72,11 +72,11 @@
      * write only this part)
      */
     function updateQuestion() {
-        var id = 2;
+        var id = 3;
         
         var updatedData = {
             type: 'short_text',
-            text: 'Lol?'
+            text: 'So what?'
         };
 
         $.ajax({
