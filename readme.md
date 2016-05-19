@@ -1,6 +1,6 @@
 Installation npm packages:
 -------------------------
-        1. Go to the /development/backend directory.
+        1. Go to the /development directory.
         2. Run 'npm i'.
         3. All dependencies from 'package.json' must be downloaded and installed.
 
@@ -10,8 +10,8 @@ Frontend assembly dependencies:
         2. Run 'bower i'.
         3. All dependencies from 'bower.json' must be downloaded and installed.
 
-Bower assembly task:
---------------------
+Bower assembly tasks:
+---------------------
         1. 'main' -> assembly *.{html, js, css} from ../frontend/view to /production/{css, js}
         2. 'vendors' -> assemply only needed libs from ../frontend/bower_components to /production/libs
         3. 'watch' -> remaking *.{html, js, css} after changing
