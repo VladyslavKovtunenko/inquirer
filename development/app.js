@@ -10,9 +10,9 @@ var fs = require('fs');
 
 var app = express();
 
-app.set('views', path.join(__dirname, '../frontend/view'));
+app.set('views', path.join(__dirname, 'view/static'));
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, '../frontend/app')));
+app.use(express.static(path.join(__dirname, 'view/static')));
 app.use(bodyParser.json());
 
 http.createServer(app).listen(config.get('server_port'), function () {
@@ -20,7 +20,7 @@ http.createServer(app).listen(config.get('server_port'), function () {
 });
 
 app.get('/', function (req, res) {
-    fs.createReadStream('frontend/view/index.html').pipe(res);
+    fs.createReadStream('index.html').pipe(res);
 });
 
 app.get('/api/questions', function (req, res) {
@@ -35,12 +35,15 @@ app.get('/api/questions', function (req, res) {
 });
 
 app.post('/api/question', function (req, res) {
+    if (req.body == {}) {
+        res.status(400).end();
+    }
     dao.set(JSON.stringify(req.body));
     res.status(201).end();
 });
 
 app.route(/^\/api\/question\/[0-9]+/)
-    .put(function (req, res) {
+    .put(function (req, res) {  
         var id = generateIdFromUrl(req.url);
         generateChanges(req.body, id).then(function (newData) {
             dao.update(id, JSON.stringify(newData)); 

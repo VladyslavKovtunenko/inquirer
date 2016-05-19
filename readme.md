@@ -5,9 +5,9 @@ Installation npm packages:
         3. All dependencies from 'package.json' must be downloaded and installed.
 DB usage:
 --------
-        1. Create empty table before reestablishing.
+        1. Create empty database before reestablishing.
         2. DB dump in /backend/db/dump.
-        3. Run 'psql table_name < dump_name'.
+        3. Run 'psql database_name < dump_name'.
 Running server:
 --------------
         * Server running by app.js with environment variables:

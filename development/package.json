@@ -9,8 +9,11 @@
     "nconf": "latest",
     "serve-favicon": "~2.3.0",
     "sequelize": "^3.23.0",
-    "winston": "latest",
-    "gulp": "latest",
-    "gulp-google-cdn": "latest"
+    "winston": "latest"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-google-cdn": "latest",
+    "gulp-watch": "^4.3.5"
   }
 }
