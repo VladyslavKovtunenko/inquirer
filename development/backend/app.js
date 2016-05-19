@@ -3,16 +3,16 @@ var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var http = require('http');
 var path = require('path');
-var config = require('./lib/config');
-var log = require('./lib/logger')(module);
+var config = require('./lib/config/index');
+var log = require('./lib/logger/index')(module);
 var dao = require('./db/dao');
 var fs = require('fs');
 
 var app = express();
 
-app.set('views', path.join(__dirname, 'view/static'));
+app.set('views', path.join(__dirname,'../../production/'));
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'view/static')));
+app.use(express.static(path.join(__dirname, '../../production/')));
 app.use(bodyParser.json());
 
 http.createServer(app).listen(config.get('server_port'), function () {
