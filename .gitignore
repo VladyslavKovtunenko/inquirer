@@ -1,0 +1,6 @@
+# ignore node modules files
+/backend/node_modules/*
+/frontend/node_modules/*
+
+# ignor bower files
+/frontend/bower_components/*

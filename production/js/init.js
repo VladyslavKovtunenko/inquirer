@@ -1,1 +1,0 @@
-!function(n){function t(){n.ajax({url:"http://localhost:3000/api/questions",type:"GET",contentType:"application/json",dataType:"json",success:function(t){n().inquirer("#add",JSON.stringify(t))}})}t()}(jQuery);

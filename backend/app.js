@@ -10,9 +10,9 @@ var fs = require('fs');
 
 var app = express();
 
-app.set('views', path.join(__dirname,'../../production/'));
+app.set('views', path.join(__dirname,'../frontend/static'));
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, '../../production/')));
+app.use(express.static(path.join(__dirname, '../frontend/static')));
 app.use(bodyParser.json());
 
 http.createServer(app).listen(config.get('server_port'), function () {

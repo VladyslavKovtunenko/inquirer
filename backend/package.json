@@ -1,6 +1,6 @@
 {
-  "name": "inquirer",
-  "version": "0.0.1",
+  "name": "backend",
+  "version": "1.0.0",
   "dependencies": {
     "body-parser": "~1.13.2",
     "pg": "^4.5.5",
@@ -10,12 +10,5 @@
     "serve-favicon": "~2.3.0",
     "sequelize": "^3.23.0",
     "winston": "latest"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-uglify": "^1.5.3",
-    "gulp-watch": "^4.3.5",
-    "main-bower-files": "latest",
-    "gulp-clean-css": "latest"
   }
 }
