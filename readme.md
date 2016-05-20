@@ -19,12 +19,12 @@ Gulp assembly tasks:
 DB usage:
 --------
         1. Create empty database before reestablishing.
-        2. DB dump in /development/backend/db/dump.
+        2. DB dump in /backend/db/dump.
         3. Run 'psql database_name < dump_name'.
 
 Running server:
 --------------
-        1. Server running by /development/backend/app.js with environment variables:
+        1. Server running by /backend/app.js with environment variables:
             1.1 NODE_ENV = development
             1.2 NODE_PATH = .
 
