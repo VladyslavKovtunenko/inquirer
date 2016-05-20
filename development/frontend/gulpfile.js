@@ -1,6 +1,9 @@
 var gulp = require('gulp');
 var watch = require('gulp-watch');
 var mainBowerFiles = require('main-bower-files');
+var uglify = require('gulp-uglify');
+var cleanCSS = require('gulp-clean-css');
+
 
 var dest = '../../production';
 
@@ -15,11 +18,13 @@ gulp.task('html', function () {
 
 gulp.task('css', function () {
     gulp.src('view/**/*.css')
+        .pipe(cleanCSS())
         .pipe(gulp.dest(dest));
 });
 
 gulp.task('js', function () {
     gulp.src('view/**/*.js')
+        .pipe(uglify())
         .pipe(gulp.dest(dest));
 });
 
